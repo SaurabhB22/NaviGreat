@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>NaviGreat — The Smart Campus Navigator for CSJM University</title>
+<meta name="description" content="Find your way around CSJM University, Kanpur — live campus map, point-to-point directions, and building directory.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,650;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/3.6.2/maplibre-gl.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/3.6.2/maplibre-gl.min.js"></script>
+<link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 21l9-4.5L21 21 12 2z" stroke="#e8912d" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </div>
+      <span class="brand-name">Navi<em>Great</em></span>
+    </div>
+    <div class="nav-links">
+      <a href="#map">Campus Map</a>
+      <a href="#wayfind">Directions</a>
+      <a href="#explore">Explore</a>
+      <a href="#getting-here">Getting Here</a>
+      <a href="#wayfind" class="nav-cta">Find my way</a>
+    </div>
+    <button class="menu-btn" aria-label="Menu">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="#14171f" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+  </nav>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero" id="map">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow">Chhatrapati Shahu Ji Maharaj University · Kalyanpur, Kanpur</div>
+        <h1>Never lose your way<br>across <span class="accent">264 acres</span><br>of campus.</h1>
+        <p class="lede">NavGrade is the unofficial campus navigator for CSJMU — a live map to find any block, hostel, or department, with point-to-point directions and walk-time estimates built right in.</p>
+        <div class="hero-actions">
+          <a href="#wayfind" class="btn-primary">Open live map →</a>
+          <a href="#explore" class="btn-ghost">Browse the campus</a>
+        </div>
+      </div>
+      <div>
+        <div class="map-card">
+          <div class="tag"><span class="live-dot"></span> LIVE CAMPUS MAP</div>
+          <div id="hero-map"></div>
+        </div>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="signpost-row">
+        <div class="signpost"><div class="num">264</div><div class="label">Acre campus, Kalyanpur</div></div>
+        <div class="signpost"><div class="num">1966</div><div class="label">Established</div></div>
+        <div class="signpost"><div class="num">10</div><div class="label">Landmarks mapped</div></div>
+        <div class="signpost"><div class="num">26.498°N</div><div class="label">80.266°E — campus centre</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WAYFINDING -->
+  <section class="wayfind" id="wayfind">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">Wayfinding</div>
+        <h2>Point A to Point B, without asking a stranger.</h2>
+        <p>Pick where you are and where you're headed — NavGrade lays a route across campus, estimates the walk, and drops you a pin. Built for the first-week-of-semester panic.</p>
+      </div>
+
+      <div class="finder-panel reveal">
+        <div class="finder-controls">
+          <div class="field">
+            <label for="from-select">Starting point</label>
+            <select id="from-select"></select>
+          </div>
+          <button class="swap-btn" id="swap-btn">⇅ Swap start &amp; destination</button>
+          <div class="field">
+            <label for="to-select">Destination</label>
+            <select id="to-select"></select>
+          </div>
+
+          <div class="route-result" id="route-result">
+            <div class="rr-dist" id="rr-dist">—</div>
+            <div class="rr-meta" id="rr-meta">Choose two points to plot a route</div>
+          </div>
+
+          <div class="directory" id="directory"></div>
+        </div>
+
+        <div class="finder-map-wrap">
+          <div id="finder-map"></div>
+          <div class="category-filters" id="category-filters"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPLORE BY CATEGORY -->
+  <section id="explore">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">Explore</div>
+        <h2>Browse campus by what you need.</h2>
+        <p>Jump straight to the part of campus that matters right now — academics, hostels, campus life, or the gate you came in through.</p>
+      </div>
+
+      <div class="cat-grid" id="explore-grid"></div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-strip">
+    <div class="wrap stats-grid">
+      <div class="stat"><div class="n">10</div><div class="l">Campus landmarks mapped</div></div>
+      <div class="stat"><div class="n">~14</div><div class="l">Min. average cross-campus walk</div></div>
+      <div class="stat"><div class="n">4</div><div class="l">Landmark categories</div></div>
+      <div class="stat"><div class="n">2</div><div class="l">Metro stations nearby</div></div>
+    </div>
+  </div>
+
+  <!-- GETTING HERE -->
+  <section id="getting-here">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">Getting here</div>
+        <h2>Arriving on campus, from anywhere in Kanpur.</h2>
+        <p>CSJMU sits right on the Kanpur Metro's Orange Line — two stations open directly onto the campus perimeter.</p>
+      </div>
+
+      <div class="transit-layout">
+        <div class="transit-list reveal">
+          <div class="transit-row">
+            <div class="transit-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="15" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M4 13h16M8 21l1.5-3M16 21l-1.5-3M8 8h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+            <div>
+              <h4>Vishwavidyalaya Metro Station</h4>
+              <p>On the Orange Line, right beside the university. The closest stop for the Main Gate and the eastern campus.</p>
+              <span class="badge">Orange Line · Kanpur Metro</span>
+            </div>
+          </div>
+          <div class="transit-row">
+            <div class="transit-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="15" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M4 13h16M8 21l1.5-3M16 21l-1.5-3M8 8h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+            <div>
+              <h4>SPM Hospital Metro Station</h4>
+              <p>The next stop over, also adjoining CSJMU — a useful alternative if you're headed for the western hostels.</p>
+              <span class="badge">Orange Line · Kanpur Metro</span>
+            </div>
+          </div>
+          <div class="transit-row">
+            <div class="transit-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3v18M3 12h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/></svg></div>
+            <div>
+              <h4>Main Gate, Kalyanpur</h4>
+              <p>The primary vehicle entrance off the Kalyanpur road — start your NavGrade route from here if you're arriving by car or auto.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="campus-card reveal">
+          <h3>Campus at a glance</h3>
+          <div class="fact-row"><span>Location</span><span>Kalyanpur, Kanpur</span></div>
+          <div class="fact-row"><span>Coordinates</span><span>26.498°N, 80.266°E</span></div>
+          <div class="fact-row"><span>Campus size</span><span>264 acres</span></div>
+          <div class="fact-row"><span>Established</span><span>1966</span></div>
+          <div class="fact-row"><span>Metro line</span><span>Orange Line</span></div>
+          <div class="fact-row"><span>Nearest stations</span><span>Vishwavidyalaya · SPM Hospital</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" style="background:var(--paper-dim); border-top:1px solid var(--line-light);">
+    <div class="wrap" style="max-width:760px;">
+      <div class="eyebrow">About this build</div>
+      <h2 style="font-family:var(--display); font-weight:650; font-size:clamp(1.6rem,2.6vw,2.1rem); margin:16px 0 16px;">Built for CSJMU, from public data.</h2>
+      <p style="color:var(--slate); font-size:1rem; margin-bottom:14px;">NavGrade is an independent student-tools concept, not an official University publication. The campus is genuinely centred on CSJMU's Kalyanpur coordinates (26.498°N, 80.266°E), and the two Kanpur Metro stations are real, verified stops on the Orange Line. Individual building pins, however, are placed illustratively until an official campus geodata set is available — treat distances as estimates, not survey-grade measurements.</p>
+      <p style="color:var(--slate); font-size:1rem;">Have accurate building coordinates or a campus layout to contribute? That's exactly the kind of data that would make the live map official.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <div class="brand" style="margin-bottom:12px;">
+          <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 21l9-4.5L21 21 12 2z" stroke="#e8912d" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+          <span class="brand-name">Nav<em>Grade</em></span>
+        </div>
+        <p class="footer-note">From darkness, lead us to light — CSJMU's own motto, and a decent description of finding the School of Health Sciences on your first day.</p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h5>Explore</h5>
+          <a href="#map">Campus map</a>
+          <a href="#wayfind">Directions</a>
+          <a href="#getting-here">Getting here</a>
+        </div>
+        <div class="footer-col">
+          <h5>University</h5>
+          <a href="https://csjmu.ac.in/" target="_blank" rel="noopener">csjmu.ac.in</a>
+          <a href="#about">About this project</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 NavGrade — an independent student project, unaffiliated with CSJMU administration.</span>
+      <span>Map data © OpenStreetMap contributors</span>
+    </div>
+  </div>
+</footer>
+<script src="script.js"></script>
+</body>
+</html>
